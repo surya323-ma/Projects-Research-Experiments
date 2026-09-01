@@ -79,7 +79,7 @@ Outputs: `regimelens_dashboard.png`, `regimelens_bic_sweep.png`
 
 ---
 
-## 3. Multi-Factor Alpha Landscape Explorer
+## 3. AlphaScape Engine
 
 ### Overview
 An experimental quantitative research platform for studying synthetic alpha factors, predictive relationships, and factor interactions using machine learning and institutional-style visualization dashboards.
@@ -104,7 +104,7 @@ Python • NumPy • Pandas • Scikit-Learn • Matplotlib • Seaborn • SciP
 ### Run
 ```bash
 pip install numpy pandas matplotlib seaborn scipy scikit-learn
-python multi_factor_alpha_landscape_explorer.py
+python alphascape_engine.py
 ```
 
 ---
@@ -131,7 +131,7 @@ These projects focus heavily on institutional-style quantitative research visual
 * CPU-friendly projects
 * Built for experimentation and learning
 * Suitable for ML + quant portfolio projects
-* **Projects 1 and 2** were renamed and reworked from their original versions to fix real correctness bugs (unscaled clustering features, a silently constant spread column, a broadcast bug that zeroed out depth imbalance, a missing regime class, dead dashboard code, and a random — leakage-prone — train/test split on time series data), and to add honest, walk-forward-validated result reporting instead of unvalidated single-split metrics. Their old filenames (`liquidity_shock_simulator.py`, `neural_regime_detection_engine.py`) are no longer used — use the filenames under each project's Run section above.
+* **Projects 1 and 2** were renamed and reworked from their original versions to fix real correctness bugs (unscaled clustering features, a silently constant spread column, a broadcast bug that zeroed out depth imbalance, a missing regime class, dead dashboard code, and a random — leakage-prone — train/test split on time series data), and to add honest, walk-forward-validated result reporting instead of unvalidated single-split metrics. Their old filenames (`liquidity_shock_simulator.py`, `neural_regime_detection_engine.py`,) are no longer used — use the filenames under each project's Run section above.
 
 ---
 

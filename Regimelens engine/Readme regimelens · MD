@@ -1,0 +1,33 @@
+# RegimeLens Engine
+### Unsupervised Market Regime Detection & Validation Dashboard
+
+*(formerly "Neural Regime Detection Engine" — renamed and substantially reworked for correctness and result quality)*
+
+A quantitative research tool that generates synthetic market data covering five regimes (trend, mean-reversion, panic, crash, high-volatility), fits unsupervised regime-detection models, validates detected regimes against the known ground truth, and renders a full multi-panel dashboard including a regime-conditional Monte Carlo simulation.
+
+All data is synthetic. For educational / research use only — not investment advice.
+
+## What changed from the original version
+
+**Bugs fixed:**
+- With the fixed seed, the original random regime sequence + truncation to `n_steps` meant the **`trend` regime never appeared at all** (0 samples) — every model was silently trained and shown on only 4 of the 5 advertised regimes. The generator now tiles and shuffles each regime multiple times and checks at runtime that all five actually survive truncation.
+- GMM/KMeans/PCA were fit on **raw, unscaled features** — `ma_10`, `ma_50`, and `momentum` are on price scale (often 10-100x larger than `returns`/`volatility`), so clustering was effectively driven by price level, not the return/volatility signature that actually defines a regime. Added `StandardScaler` before all three.
+- `regime_true` was generated in the data but **never used anywhere** — there was no way to know if the clustering was any good. Added majority-vote cluster-to-regime alignment plus Adjusted Rand Index and Normalized Mutual Information against ground truth, printed for both GMM and KMeans.
+- The `__main__` block never actually called `main()` — the full advertised dashboard (transition heatmap, PCA scatter, confidence mapping, etc.) was dead code; only a single 3D plot ever ran. The dashboard is now the default entry point and saves to disk (headless-safe) instead of `plt.show()`.
+- The "Monte Carlo Regime Simulations" panel plotted ten generic `N(0,1)` random walks completely disconnected from the fitted models. Replaced with a regime-conditional simulation that bootstraps from the GMM's own empirical transition matrix and per-state return distributions, so the paths actually reflect what the model learned about regime persistence and regime-specific volatility.
+
+**Added for honest result reporting:**
+- A BIC sweep over component counts (2-8), shown as its own plot — the original hardcoded `n_components=5` because that's how many regimes were simulated, which a real unsupervised detector wouldn't know in advance.
+- Printed accuracy / ARI / NMI: on this run, GMM aligns to ground truth at **~63% majority-vote accuracy** (ARI 0.39, NMI 0.57). That's a genuine, non-trivial result for unsupervised regime detection — meaningfully better than chance (~20% for 5 balanced classes) — and it's reported honestly rather than dressed up, including that `mean_revert` is the hardest regime to separate (its low-drift, low-vol signature overlaps with calm periods of other regimes).
+
+## Dashboard output
+
+- `regimelens_dashboard.png` — transition counts, 3D volatility-regime surface, confidence over time, PCA projection, GMM state means, regime probability distributions, time/volatility/state scatter, regime-conditional Monte Carlo paths, volatility distribution
+- `regimelens_bic_sweep.png` — BIC vs. number of components
+
+## Run
+
+```
+pip install numpy pandas matplotlib seaborn scipy scikit-learn
+python regimelens_engine.py
+```
